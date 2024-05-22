@@ -57,12 +57,22 @@ if __name__ == '__main__':
     # TODO 1: Retrieve only the best matching chunk for the query "What is an alternative to keyword search?"
     #  Can you answer the question based on the retrieved chunk? (max_results=1)
     # BEGIN SOLUTION
-
+    query = "What is an alternative to keyword search?"
+    result = strategy.retrieve_max_results(question=query, max_results=1)
+    for chunk in result.items:
+        print(f"Chunk id: {chunk.chunk_id}")
+        print(f"Text: {chunk.text}")
+        print("--------------------------------------------------")
     # END
 
     # TODO 2: Use the window retrieval strategy, what size of the window would you use to answer the question?
     # BEGIN SOLUTION
-
+    strategy = WindowRetrievalStrategy(retriever=content_store, window_size=2)
+    result = strategy.retrieve_max_results(question=query, max_results=1)
+    for chunk in result.items:
+        print(f"Chunk id: {chunk.chunk_id}")
+        print(f"Text: {chunk.text}")
+        print("--------------------------------------------------")
     # END
 
     # sys.exit(0)
@@ -81,13 +91,23 @@ if __name__ == '__main__':
     # TODO 3: Retrieve the first chunk of the document with the id "using-ai-to-save-time-and-sanity"
     #  How many chunks does the document have?
     # BEGIN SOLUTION
-
+    get_chunk = weaviate_retriever.get_chunk(document_id="using-ai-to-save-time-and-sanity", chunk_id=0)
+    print("--------------------------------------------------")
+    print(f"Document: {get_chunk.document_id} - {get_chunk.chunk_id} - {get_chunk.total_chunks}")
     # END
 
     # TODO 4: Retrieve the four best matching chunks for the query "Wie heeft het over zoek technologie?",
     #  use the window retrieval strategy with a window size of 2.
     query = "Wie heeft het over zoek technologie?"
     # BEGIN SOLUTION
+    strategy = WindowRetrievalStrategy(retriever=weaviate_retriever, window_size=2)
+    result = strategy.retrieve_max_results(question=query, max_results=4)
+    print(f"Found {len(result.items)} relevant chunks for query: {query}.")
 
+    for item in result.items:
+        print(f"Document: {item.document_id}")
+        print(f"Chunk id: {item.chunk_id}")
+        print(f"Text: {item.text}")
+        print("--------------------------------------------------")
     # END
     client.close()

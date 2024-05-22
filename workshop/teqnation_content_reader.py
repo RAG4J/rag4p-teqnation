@@ -6,7 +6,7 @@ from rag4p.indexing.input_document import InputDocument
 
 class TeqnationContentReader(ContentReader):
     def __init__(self):
-        self.filename = "../data/sessions.jsonl"
+        self.filename = "../data/teqnation/sessions.jsonl"
 
     def read(self):
         with open(self.filename, 'r') as file:

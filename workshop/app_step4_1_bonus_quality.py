@@ -9,7 +9,7 @@ from rag4p.rag.retrieval.quality.retrieval_quality_service import read_question_
 from rag4p.rag.store.local.internal_content_store import InternalContentStore
 from rag4p.util.key_loader import KeyLoader
 
-from workshop.teqnation_content_reader import TeqnationContentReader
+from workshop.teqnation.teqnation_content_reader import TeqnationContentReader
 
 if __name__ == '__main__':
     """
@@ -60,8 +60,14 @@ if __name__ == '__main__':
     # TODO 1: Rewrite the embedder and the content store to use the OpenAIEmbedder and the WeaviateRetriever
     #  It is safe to skip if you have little time left. Did the quality improve? Why?
     # begin solution
+    embedder = OpenAIEmbedder(api_key=key_loader.get_openai_api_key())
+    weaviate_client = AccessWeaviate(url=key_loader.get_weaviate_url(), access_key=key_loader.get_weaviate_api_key())
+    retriever = WeaviateRetriever(weaviate_access=weaviate_client, embedder=embedder, hybrid=False)
+    retriever_quality = obtain_retrieval_quality(question_answer_records=question_answer_records,
+                                                 retriever=retriever)
 
+    print(f"Quality using precision: {retriever_quality.precision()}")
+    print(f"Total questions: {retriever_quality.total_questions()}")
     # For my run the quality was 0.908
     # end solution
     weaviate_client.close()
-

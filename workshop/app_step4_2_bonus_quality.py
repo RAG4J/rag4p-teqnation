@@ -2,7 +2,7 @@ from rag4p.integrations.openai.openai_answer_generator import OpenaiAnswerGenera
 from rag4p.rag.generation.observed_answer_generator import ObservedAnswerGenerator
 from rag4p.rag.tracker.rag_tracker import global_data
 from rag4p.rag.retrieval.strategies.window_retrieval_strategy import WindowRetrievalStrategy
-from workshop.retrieval.strategies.document_retrieval_strategy import DocumentRetrievalStrategy
+from rag4p.rag.retrieval.strategies.document_retrieval_strategy import DocumentRetrievalStrategy
 from rag4p.util.key_loader import KeyLoader
 from rag4p.integrations.openai.quality.openai_answer_quality_service import OpenAIAnswerQualityService
 from rag4p.integrations.openai.openai_embedder import OpenAIEmbedder
@@ -92,6 +92,18 @@ if __name__ == '__main__':
     question = "Who are the people presenting the workshop about a q&a system?"
     print("\n----------------------------------")
     # BEGIN SOLUTION
+    strategy = DocumentRetrievalStrategy(retriever=retriever, observe=True)
+    context = strategy.retrieve_max_results(question=question, max_results=1).construct_context()
+
+    answer = answer_generator.generate_answer(question, context)
+    print(f"Question: {question}")
+    print(f"Answer: {answer}")
+    print(f"Context: {context}")
+
+    quality = answer_quality_service.determine_quality_answer_related_to_question(rag_observer=rag_observer)
+    print(f"Quality: {quality.quality}, Reason: {quality.reason}")
+    quality = answer_quality_service.determine_quality_answer_from_context(rag_observer=rag_observer)
+    print(f"Quality: {quality.quality}, Reason: {quality.reason}")
 
     # END
     weaviate_client.close()

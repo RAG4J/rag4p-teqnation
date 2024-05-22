@@ -14,19 +14,18 @@ if __name__ == '__main__':
     - 1. Read the content from a source
     - 2. Split the content into chunks using a splitter.
     - 3. Create a vector or embedding from the text using an embedder. 
-
+    
     The size of the chunks you create by the splitter has a big impact on the precision of the system. If 
     the chunks are too small, the system will have a hard time to find the correct answer. If the chunks are too 
     big, the system will have a hard time to find the correct answer. The goal is to find a good balance between 
     the two.
-
+    
     The embedders are essential to the similarity search of the vector store. You will use a weird embedder
     called the AlphabetEmbedder. This embedder will create an embedding for a chunk of text based on the alphabet.
     A better, still local running, embedder is the OnnxEmbedder. The best embedder you use is the OpenAIEmbedder.
     """
 
     from dotenv import load_dotenv
-
     load_dotenv()
 
     key_loader = KeyLoader()
@@ -61,7 +60,9 @@ if __name__ == '__main__':
     splitter = None
     # TODO 1: Use the sentence splitter to split content into chunks.
     # BEGIN SOLUTION
-
+    splitter = SentenceSplitter()
+    chunks = splitter.split(doc)
+    num_chunks = len(chunks)
     # END
 
     print(f"Number of chunks is : {'correct' if num_chunks == 16 else 'wrong'} ")
@@ -69,8 +70,11 @@ if __name__ == '__main__':
     # TODO 2: Print the text of the chunks to verify the sentences. We think 17 would be better.
     # Spot the problem in the content that causes the splitter to create 16 chunks.
     # BEGIN SOLUTION
+    for i, chunk in enumerate(chunks):
+        print(f"Chunk {i + 1}: {chunk.chunk_text}")
     # END
 
+    # sys.exit(0)
     ############################################################
     # Storing content embeddings
     ############################################################
@@ -79,7 +83,8 @@ if __name__ == '__main__':
     embedding = embedder.embed(chunks[0].chunk_text)
     # TODO 3: Look at the embedding. What is the length of the embedding? How does the embedding work?
     # BEGIN SOLUTION
-
+    print(f"Embedding: {embedding}")
+    print(f"Embedding size: {len(embedding)}")
     # END
 
     content_store = InternalContentStore(embedder=embedder)
@@ -88,7 +93,12 @@ if __name__ == '__main__':
 
     # TODO 4: Print the relevant chunks. What is your opinion on the results? Did you print the score?
     # BEGIN SOLUTION
-
+    for chunk in relevant_chunks:
+        print(f"Document: {chunk.document_id}")
+        print(f"Chunk id: {chunk.chunk_id}")
+        print(f"Text: {chunk.chunk_text}")
+        print(f"Score: {chunk.score:.3f}")
+        print("--------------------------------------------------")
     # END
 
     # TODO 5: Replace the embedder with the OnnxEmbedder. What is the size of the embedding Now? Do the results improve?

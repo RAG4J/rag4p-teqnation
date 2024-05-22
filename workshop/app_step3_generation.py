@@ -33,7 +33,9 @@ if __name__ == '__main__':
 
     # TODO 1: Generate an answer using the answer_generator. Use the question and context variables
     # begin solution
-
+    answer = answer_generator.generate_answer(question=question, context=context)
+    print(f"Question: {question}")
+    print(f"Answer: {answer}")
     # end solution
 
     ############################################################
@@ -56,9 +58,13 @@ if __name__ == '__main__':
     # TODO 2: Generate an answer using the answer_generator, the obtained context and the question.
     #  Did it find an answer? If not, why not? What can you do?
     # begin solution
-
+    answer = answer_generator.generate_answer(question=question, context=context)
+    print(f"Question: {question}")
+    print(f"Answer: {answer}")
     # end solution
 
     # TODO 3: Play around with the different components, ask other questions, choose other strategy, etc
+
+
 
     weaviate_client.close()
